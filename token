@@ -1,0 +1,8 @@
+let
+    Source = Json.Document(Web.Contents("https://margincalculator.angelbroking.com/OpenAPI_File/files/OpenAPIScripMaster.json")),
+    #"Converted to Table" = Table.FromList(Source, Splitter.SplitByNothing(), null, null, ExtraValues.Error),
+    #"Expanded Column1" = Table.ExpandRecordColumn(#"Converted to Table", "Column1", {"token", "symbol", "name", "expiry", "strike", "lotsize", "instrumenttype", "exch_seg", "tick_size"}, {"token", "symbol", "name", "expiry", "strike", "lotsize", "instrumenttype", "exch_seg", "tick_size"}),
+    #"Changed Type" = Table.TransformColumnTypes(#"Expanded Column1",{{"token", type text}, {"symbol", type text}, {"name", type text}, {"expiry", type date}, {"strike", type text}, {"lotsize", Int64.Type}, {"instrumenttype", type text}, {"exch_seg", type text}, {"tick_size", Int64.Type}}),
+    #"Filtered Rows" = Table.SelectRows(#"Changed Type", each ([exch_seg] = "NFO") and ([name] = "BANKNIFTY" or [name] = "NIFTY"))
+in
+    #"Filtered Rows"

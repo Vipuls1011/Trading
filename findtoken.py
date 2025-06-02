@@ -1,20 +1,23 @@
 import requests
-import json
 
-# URL of the JSON file
 url = "https://margincalculator.angelbroking.com/OpenAPI_File/files/OpenAPIScripMaster.json"
-
-# Desired symbol
-target_symbol = "NIFTY05JUN2524400PE"
-
-# Fetch and parse JSON data
 response = requests.get(url)
 data = response.json()
 
-# Search for the symbol and print its token
-for item in data:
-    if item.get("symbol") == target_symbol:
-        print(item.get("token"))
-        break
-else:
-    print("Symbol not found.")
+# List of symbols you're searching for
+symbols = [
+    "NIFTY05JUN2524400PE",
+    "NIFTY05JUN2524500CE",
+    "NIFTY05JUN2525000PE"
+]
+
+# Search and print token for each symbol
+for target_symbol in symbols:
+    found = False
+    for item in data:
+        if item.get("symbol") == target_symbol:
+            print(f"{target_symbol} -> Token: {item.get('token')}")
+            found = True
+            break
+    if not found:
+        print(f"{target_symbol} -> Not found")
